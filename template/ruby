@@ -1,0 +1,41 @@
+#!/usr/bin/env ruby
+# encoding: utf-8
+
+Encoding.default_external = "UTF-8"
+
+# path
+$:.push(File.expand_path(File.dirname(__FILE__) + "/"))
+
+# library
+require 'rubygems'
+require 'optparse'
+
+# local method
+def usage
+  msg =<<EOS
+
+  #{File.basename($0)} --option value
+
+        value : explanation
+
+EOS
+  STDERR.puts msg
+end
+
+############################################################################################
+## Main
+############################################################################################
+
+value = nil
+help = false
+OptionParser.new do |opt|
+  opt.on('--option V') {|v| value  = v}
+  opt.on('--help') {help = true}
+
+  opt.parse!(ARGV)
+end
+
+if help
+  usage
+  exit 1
+end

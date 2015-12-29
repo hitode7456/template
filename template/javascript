@@ -1,0 +1,22 @@
+#!/usr/bin/env node
+
+"use strict";
+
+let opts = require('opts');
+let options = null;
+
+opts.parse([
+    {
+        short: '',
+        long: 'options',
+        description: 'options',
+        value: true,
+        required: false,
+        callback: function(v) {options = v}
+    }
+]);
+
+if (options == null) {
+    console.error('this command requires the options');
+    process.exit(1);
+}

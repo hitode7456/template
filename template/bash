@@ -1,0 +1,93 @@
+#!/bin/bash
+
+export CMD=$0
+
+## local functions {{{
+function usage ()
+{
+    cat <<EOT
+
+usage: $CMD [OPTIONS]
+
+    --options  : options
+    --help     : show this help
+
+OPTIONS:
+
+EOT
+}
+
+function print_info ()
+{
+    echo -e "\e[32m[$(LANG=C; date)] [INFO]  [$CMD] $1\e[m" >&2
+}
+
+function print_err ()
+{
+    echo -e "\e[31m[$(LANG=C; date)] [ERROR] [$CMD] $1\e[m" >&2
+}
+
+function print_warn ()
+{
+    echo -e "\e[33m[$(LANG=C; date)] [WARN]  [$CMD] $1\e[m" >&2
+}
+## }}}
+
+if [[ -z "$1" ]]
+then
+    usage
+    exit 1
+fi
+
+help=0
+
+options=
+
+## options {{{
+argc="${#}"
+
+for (( i = 0 ; i < argc ; i++ ))
+do
+    arg="$1"
+    shift
+
+    if [[ "$arg" == "--options" ]]
+    then
+
+        if [[ -n "$1" ]]
+        then
+            options="$1"
+        else
+            usage
+            exit 1
+        fi
+
+        shift
+        continue
+    fi
+
+    if [[ "$arg" == "--help" ]]
+    then
+
+        help=1
+
+        continue
+    fi
+
+done
+## }}}
+
+## check options {{{
+if [[ -z "$options" ]]
+then
+    print_err "Requires \"--options\""
+    exit 1
+fi
+
+## check command {{{
+if [[ -z "$(type -p jq)" ]]
+then
+    print_err "Not found jq command"
+    exit 1
+fi
+}}}

@@ -1,0 +1,106 @@
+#!/bin/bash
+
+export CMD=$0
+export DIR=$(cd $(dirname $0); pwd)
+
+## local functions {{{
+function usage ()
+{
+    cat <<EOT
+
+usage: $CMD [OPTIONS]
+
+    -t  : file type
+
+    --help     : show this help
+
+OPTIONS:
+
+EOT
+}
+
+function print_info ()
+{
+    echo -e "$1" >&2
+}
+
+function print_err ()
+{
+    echo -e "$1" >&2
+}
+
+function print_warn ()
+{
+    echo -e "$1" >&2
+}
+## }}}
+
+if [[ -z "$1" ]]
+then
+    usage
+    exit 1
+fi
+
+help=0
+
+type=
+
+## options {{{
+argc="${#}"
+
+for (( i = 0 ; i < argc ; i++ ))
+do
+    arg="$1"
+    shift
+
+    if [[ "$arg" == "-t" ]]
+    then
+
+        if [[ -n "$1" ]]
+        then
+            type="$1"
+        else
+            usage
+            exit 1
+        fi
+
+        shift
+        continue
+    fi
+
+    if [[ "$arg" == "--help" ]]
+    then
+
+        help=1
+
+        continue
+    fi
+
+done
+## }}}
+
+## check options {{{
+if [[ -z "$type" ]]
+then
+    usage
+    exit 1
+fi
+## }}}
+
+t_list=($(ls ${DIR}/template/${type}* 2> /dev/null))
+
+t_list_size=${#t_list[@]}
+
+if [[ 0 == $t_list_size ]]
+then
+    print_err "Not found the template which prefix ${type}"
+    exit 1
+fi
+
+if [[ 1 < $t_list_size ]]
+then
+    print_err "Match more than 2 template by ${type}"
+    exit 1
+fi
+
+cat ${t_list[0]}
